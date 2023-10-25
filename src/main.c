@@ -9,10 +9,10 @@
 #define BLINKCNT_0 ((DEVICE_ID)/1000)
 #define BLINKCNT_1 ((DEVICE_ID)/100%10)
 #define BLINKCNT_2 ((DEVICE_ID)/10%10)
-#define BLINKCNT_3 ((DEVICE_ID)/10%10)
+#define BLINKCNT_3 ((DEVICE_ID)%10)
 
 static inline
-void blink(uint8_t led, int8_t cnt)
+void blink(const uint8_t led, int8_t cnt)
 {
 	for (; cnt > 0; --cnt)
 	{
