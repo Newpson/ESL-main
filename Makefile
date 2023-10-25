@@ -3,7 +3,7 @@ TARGETS := nrf52840_xxaa
 OUTPUT_DIRECTORY := build
 PORT := /dev/ttyACM0
 
-SDK_ROOT := /opt/nordic
+SDK_ROOT ?= /opt/nordic
 SOFTDEVICE := $(SDK_ROOT)/components/softdevice/s113/hex/s113_nrf52_7.2.0_softdevice.hex
 PROJ_DIR := .
 
