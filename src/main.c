@@ -3,7 +3,6 @@
 #include "nrf_delay.h"
 #include "boards.h"
 
-#define LED 0
 #define DELAY 500
 #define DEVICE_ID 6598
 
@@ -13,13 +12,13 @@
 #define BLINKCNT_3 ((DEVICE_ID)/10%10)
 
 static inline
-void blink(int8_t cnt)
+void blink(uint8_t led, int8_t cnt)
 {
 	for (; cnt > 0; --cnt)
 	{
-		bsp_board_led_invert(LED);
+		bsp_board_led_invert(led);
 		nrf_delay_ms(DELAY);
-		bsp_board_led_invert(LED);
+		bsp_board_led_invert(led);
 		nrf_delay_ms(DELAY);
 	}
 }
@@ -33,7 +32,7 @@ int main(void)
 	{
 		for (int8_t i = 0; i < 4; ++i)
 		{
-			blink(blinkcnt[i]);
+			blink(i, blinkcnt[i]);
 			nrf_delay_ms(4*DELAY);
 		}
 	}
