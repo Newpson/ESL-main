@@ -1,1 +1,4 @@
 build/*
+genpkg.sh
+cmake.sh
+upload.sh
