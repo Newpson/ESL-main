@@ -1,16 +1,8 @@
-#include "boards.h"
+#include "esl_led.h"
+#include "esl_button.h"
 #include "nrf_delay.h"
-#include "nrf_gpio.h"
-#include <stdbool.h>
 
-#define SW1 NRF_GPIO_PIN_MAP(1, 6)
-
-/* #define LED1 NRF_GPIO_PIN_MAP(0, 6) */
-/* #define LED2_R NRF_GPIO_PIN_MAP(0, 8) */
-/* #define LED2_G NRF_GPIO_PIN_MAP(1, 9) */
-/* #define LED2_B NRF_GPIO_PIN_MAP(0, 12) */
-
-#define DELAY 500
+#define DELAY_MS 500
 #define DEVICE_ID 6598
 
 #define BLINKCNT_0 ((DEVICE_ID)/1000)
@@ -18,34 +10,31 @@
 #define BLINKCNT_2 ((DEVICE_ID)/10%10)
 #define BLINKCNT_3 ((DEVICE_ID)%10)
 
-static inline
-void blink(const int8_t led, int8_t cnt)
-{
-	for (; cnt > 0; --cnt)
-	{
-		/* pull-up, waiting until 0 */
-		while (nrf_gpio_pin_read(SW1));
-		bsp_board_led_invert(led);
-		nrf_delay_ms(DELAY);
-		while (nrf_gpio_pin_read(SW1));
-		bsp_board_led_invert(led);
-		nrf_delay_ms(DELAY);
-	}
-}
-
 int main(void)
 {
-	int8_t blinkcnt[] = {BLINKCNT_0, BLINKCNT_1, BLINKCNT_2, BLINKCNT_3};
+	int blinkcnt[] = {BLINKCNT_0, BLINKCNT_1, BLINKCNT_2, BLINKCNT_3};
+	int leds[] = {LED1, LED2_R, LED2_G, LED2_B};
 
-	bsp_board_init(BSP_INIT_LEDS);
-	nrf_gpio_cfg_input(SW1, NRF_GPIO_PIN_PULLUP);
+	esl_leds_init();
+	esl_buttons_init();
 
 	while (true)
 	{
-		for (int8_t i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)
 		{
-			blink(i, blinkcnt[i]);
-			nrf_delay_ms(4*DELAY);
+			for (int b = blinkcnt[i]; b > 0; --b)
+			{
+				/* blink while the button is pressed */
+				for (int c = 0; c < 2; ++c)
+				{
+					while (!esl_button_pressed(SW1));
+					esl_led_toggle(leds[i]);
+					nrf_delay_ms(DELAY_MS);
+				}
+			}
+			/* break between blink series */
+			nrf_delay_ms(4*DELAY_MS);
 		}
 	}
+	return 0;
 }
