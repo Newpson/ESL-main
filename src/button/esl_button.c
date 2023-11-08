@@ -1,5 +1,5 @@
 #include "esl_button.h"
-#include "nrf_gpio.h"
+#include "nrfx_gpiote.h"
 #include <stdbool.h>
 
 int __esl_button_pull(int button)
@@ -13,15 +13,24 @@ int __esl_button_pull(int button)
 	}
 }
 
-void esl_button_init(int button)
+void esl_button_init(int button, nrfx_gpiote_evt_handler_t handler)
 {
-	nrf_gpio_cfg_input(button, __esl_button_pull(button));
+	if (!nrfx_gpiote_is_init())
+	{
+		nrfx_gpiote_init();
+	}
+
+	nrfx_gpiote_in_config_t conf = NRFX_GPIOTE_CONFIG_IN_SENSE_TOGGLE(true);
+	conf.pull = __esl_button_pull(button);
+	
+	nrfx_gpiote_in_init(button, &conf, handler);
+	nrfx_gpiote_in_event_enable(button, true);
 }
 
-void esl_buttons_init()
-{
-	esl_button_init(SW1);
-}
+/* void esl_buttons_init() */
+/* { */
+/* 	esl_button_init(SW1); */
+/* } */
 
 bool esl_button_pressed(int button)
 {
