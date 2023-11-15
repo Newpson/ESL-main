@@ -2,3 +2,4 @@ build/*
 genpkg.sh
 upload.sh
 session.vim
+CMSIS_Configuration_Wizard.jar

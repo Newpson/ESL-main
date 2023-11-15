@@ -1,11 +1,12 @@
 #include "esl_led.h"
 #include "esl_button.h"
-#include "nrf_delay.h"
+#include "esl_timer.h"
+#include "nrfx_timer.h"
 #include "nrfx_gpiote.h"
 #include "nrfx_systick.h"
-#include "app_timer.h"
 
-#define BUTTON_THRESHOLD_MS 200
+#define BUTTON_BOUNCE_MS 10
+#define BUTTON_PRESS_MS 350
 #define BLINK_DELAY_MS 500
 #define BLINK_DCTIME_MS 1 /* PWM duty cycle time */
 #define BLINK_DCTIME_US 1000*BLINK_DCTIME_MS
@@ -18,60 +19,73 @@
 #define BLINKCNT_2 ((DEVICE_ID)/10%10)
 #define BLINKCNT_3 ((DEVICE_ID)%10)
 
-volatile bool sleep = false;
-APP_TIMER_DEF(timer_press);
+volatile bool wait = false;
+volatile int press_count = 0;
+const nrfx_timer_t SW1_bounce_timer = NRFX_TIMER_INSTANCE(0);
+const nrfx_timer_t SW1_press_timer = NRFX_TIMER_INSTANCE(1);
 
-void SW1_IRQHandler(nrfx_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
+void SW1_press_timer_handler(nrf_timer_event_t event_type, void *p_context)
 {
-	static int sw1_pcount = 0;
-	++sw1_pcount;
-	/* app_timer_stop(timer_press); */
-	app_timer_start(timer_press, APP_TIMER_TICKS(BUTTON_THRESHOLD_MS), &sw1_pcount);
+	nrfx_timer_disable(&SW1_press_timer);
+	switch (press_count)
+	{
+		case 2:
+			wait = !wait;
+			break;
+		default:
+			break;
+	}
+	press_count = 0;
 }
 
-void TIMER_PRESS_IRQHandler(void *p_context)
+void SW1_bounce_timer_handler(nrf_timer_event_t event_type, void *p_context)
 {
-	int *pcount = (int *) p_context;
-	sleep = !sleep;
-	/* switch (*pcount) */
-	/* { */
-	/* 	case 1: */
-	/* 	case 2: */
-	/* 		sleep = !sleep; */
-	/* 		break; */
-	/* } */
-	*pcount = 0;
+	nrfx_timer_disable(&SW1_bounce_timer);
+	++press_count;
+	esl_timer_reset(&SW1_press_timer);
+}
+
+void SW1_action_handler(nrfx_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
+{
+	esl_timer_reset(&SW1_bounce_timer);
+}
+
+void led_blink_pwm(int led, int wait_us)
+{
+	esl_led_toggle(led);
+	nrfx_systick_delay_us(wait_us);
+	esl_led_toggle(led);
+	nrfx_systick_delay_us(BLINK_DCTIME_US-wait_us);
 }
 
 void led_toggle_linear(int led)
 {
-	for (int wait = 0; wait < BLINK_DCTIME_US; wait += BLINK_DCDELTA_US)
+	for (int wait_us = 0; wait_us < BLINK_DCTIME_US; wait_us += BLINK_DCDELTA_US)
 	{
-		while (sleep)
+		if (wait)
 		{
-			__WFE();
+			while (wait)
+			{
+				led_blink_pwm(led, wait_us);
+			}
 		}
-		esl_led_toggle(led);
-		nrfx_systick_delay_us(wait);
-		esl_led_toggle(led);
-		nrfx_systick_delay_us(BLINK_DCTIME_US-wait);
+		else
+		{
+			led_blink_pwm(led, wait_us);
+		}
 	}
 }
 
 int main(void)
 {
-	/* timers */
-	app_timer_init();
+	esl_timer_init(&SW1_bounce_timer, BUTTON_BOUNCE_MS, SW1_bounce_timer_handler);
+	esl_timer_init(&SW1_press_timer, BUTTON_PRESS_MS, SW1_press_timer_handler);
 	nrfx_systick_init();
+	esl_leds_init();
+	esl_button_init(SW1, SW1_action_handler);
 
-	app_timer_create(&timer_press, APP_TIMER_MODE_SINGLE_SHOT, TIMER_PRESS_IRQHandler);
-
-	/* gpio */
 	int blinkcnt[] = {BLINKCNT_0, BLINKCNT_1, BLINKCNT_2, BLINKCNT_3};
 	int leds[] = {LED1, LED2_R, LED2_G, LED2_B};
-
-	esl_leds_init();
-	esl_button_init(SW1, SW1_IRQHandler);
 
 	while (true)
 	{
