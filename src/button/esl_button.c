@@ -22,7 +22,7 @@ void esl_button_init(int button, nrfx_gpiote_evt_handler_t handler)
 
 	nrfx_gpiote_in_config_t conf = NRFX_GPIOTE_CONFIG_IN_SENSE_TOGGLE(true);
 	conf.pull = __esl_button_pull(button);
-	conf.sense = conf.pull == nRF_GPIO_PIN_PULLUP ? NRF_GPIOTE_POLARITY_LOTOHI : NRF_GPIOTE_POLARITY_HITOLO;
+	conf.sense = conf.pull == NRF_GPIO_PIN_PULLUP ? NRF_GPIOTE_POLARITY_LOTOHI : NRF_GPIOTE_POLARITY_HITOLO;
 	
 	nrfx_gpiote_in_init(button, &conf, handler);
 	nrfx_gpiote_in_event_enable(button, true);
