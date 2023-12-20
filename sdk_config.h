@@ -11576,7 +11576,7 @@
 // <e> NRF_SDH_ENABLED - nrf_sdh - SoftDevice handler
 //==========================================================
 #ifndef NRF_SDH_ENABLED
-#define NRF_SDH_ENABLED 0
+#define NRF_SDH_ENABLED 1
 #endif
 // <h> Dispatch model 
 
@@ -11744,7 +11744,7 @@
 // <e> NRF_SDH_SOC_ENABLED - nrf_sdh_soc - SoftDevice SoC event handler
 //==========================================================
 #ifndef NRF_SDH_SOC_ENABLED
-#define NRF_SDH_SOC_ENABLED 0
+#define NRF_SDH_SOC_ENABLED 1
 #endif
 // <h> SoC Observers - Observers and priority levels
 

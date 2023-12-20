@@ -1,13 +1,13 @@
 #include "esl_led.h"
-#include "nrfx_clock.h"
-/* #include "nrf_drv_clock.h" */
+/* #include "nrfx_clock.h" */
+#include "nrf_drv_clock.h"
 #include "app_timer.h"
 
 APP_TIMER_DEF(timer);
 
 /* do nothing */
-void clock_handler(nrfx_clock_evt_type_t event)
-{}
+/* void clock_handler(nrfx_clock_evt_type_t event) */
+/* {} */
 
 void handler(void *context)
 {
@@ -17,10 +17,10 @@ void handler(void *context)
 int main()
 {
 	esl_leds_init();
-	nrfx_clock_init(clock_handler);
-	nrfx_clock_lfclk_start();
-	/* nrf_drv_clock_init(); */
-	/* nrf_drv_clock_lfclk_request(NULL); */
+	/* nrfx_clock_init(clock_handler); */
+	/* nrfx_clock_lfclk_start(); */
+	nrf_drv_clock_init();
+	nrf_drv_clock_lfclk_request(NULL);
 
 	app_timer_init();
 

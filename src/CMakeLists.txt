@@ -19,9 +19,13 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 	# esl_button
 	# esl_timer
 	nrf5_nrfx_clock
+	nrf5_drv_clock
 	# nrf5_nrfx_rtc
+	nrf5_section
 	nrf5_app_timer_v2
 	nrf5_app_util_platform
+	nrf5_app_error
 	nrf5_sortlist
 	nrf5_atfifo
+	nrf5_sdh
 )
