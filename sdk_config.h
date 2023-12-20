@@ -2643,7 +2643,7 @@
 // <e> NRFX_PWM_ENABLED - nrfx_pwm - PWM peripheral driver
 //==========================================================
 #ifndef NRFX_PWM_ENABLED
-#define NRFX_PWM_ENABLED 0
+#define NRFX_PWM_ENABLED 1
 #endif
 // <q> NRFX_PWM0_ENABLED  - Enable PWM0 instance
  
@@ -3181,27 +3181,27 @@
 // <e> NRFX_RTC_ENABLED - nrfx_rtc - RTC peripheral driver
 //==========================================================
 #ifndef NRFX_RTC_ENABLED
-#define NRFX_RTC_ENABLED 0
+#define NRFX_RTC_ENABLED 1
 #endif
 // <q> NRFX_RTC0_ENABLED  - Enable RTC0 instance
  
 
 #ifndef NRFX_RTC0_ENABLED
-#define NRFX_RTC0_ENABLED 0
+#define NRFX_RTC0_ENABLED 1
 #endif
 
 // <q> NRFX_RTC1_ENABLED  - Enable RTC1 instance
  
 
 #ifndef NRFX_RTC1_ENABLED
-#define NRFX_RTC1_ENABLED 0
+#define NRFX_RTC1_ENABLED 1
 #endif
 
 // <q> NRFX_RTC2_ENABLED  - Enable RTC2 instance
  
 
 #ifndef NRFX_RTC2_ENABLED
-#define NRFX_RTC2_ENABLED 0
+#define NRFX_RTC2_ENABLED 1
 #endif
 
 // <o> NRFX_RTC_MAXIMUM_LATENCY_US - Maximum possible time[us] in highest priority interrupt 
@@ -3838,7 +3838,7 @@
 // <e> NRFX_TIMER_ENABLED - nrfx_timer - TIMER periperal driver
 //==========================================================
 #ifndef NRFX_TIMER_ENABLED
-#define NRFX_TIMER_ENABLED 1
+#define NRFX_TIMER_ENABLED 0
 #endif
 // <q> NRFX_TIMER0_ENABLED  - Enable TIMER0 instance
  
@@ -4326,7 +4326,7 @@
 // <q> NRFX_SYSTICK_ENABLED  - nrfx_systick - ARM(R) SysTick driver
 
 #ifndef NRFX_SYSTICK_ENABLED
-#define NRFX_SYSTICK_ENABLED 1
+#define NRFX_SYSTICK_ENABLED 0
 #endif
 
 
@@ -4889,7 +4889,7 @@
 // <e> PWM_ENABLED - nrf_drv_pwm - PWM peripheral driver - legacy layer
 //==========================================================
 #ifndef PWM_ENABLED
-#define PWM_ENABLED 0
+#define PWM_ENABLED 1
 #endif
 // <o> PWM_DEFAULT_CONFIG_OUT0_PIN - Out0 pin  <0-31> 
 
@@ -5564,7 +5564,7 @@
 // <e> TIMER_ENABLED - nrf_drv_timer - TIMER periperal driver - legacy layer
 //==========================================================
 #ifndef TIMER_ENABLED
-#define TIMER_ENABLED 1
+#define TIMER_ENABLED 0
 #endif
 // <o> TIMER_DEFAULT_CONFIG_FREQUENCY  - Timer frequency if in Timer mode
  
@@ -6122,6 +6122,17 @@
 #ifndef APP_TIMER_ENABLED
 #define APP_TIMER_ENABLED 1
 #endif
+
+// <q> APP_TIMER_V2  - Enable app timer V2
+#ifndef APP_TIMER_V2
+#define APP_TIMER_V2 1
+#endif
+
+// <q> APP_TIMER_V2_RTC1_ENABLED  - Enable RTC1 for app timer V2
+#ifndef APP_TIMER_V2_RTC1_ENABLED
+#define APP_TIMER_V2_RTC1_ENABLED 1
+#endif
+
 // <o> APP_TIMER_CONFIG_RTC_FREQUENCY  - Configure RTC prescaler.
  
 // <0=> 32768 Hz 
